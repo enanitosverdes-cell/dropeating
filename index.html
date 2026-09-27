@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dropeating</title>
+<meta name="description" content="Usted no compra el surtido. Lo pone en el estante y me abona lo que venda.">
+<style>
+  :root{
+    --tinta:#0E0F0C; --papel:#F6F4EF; --crema:#EDE8DE;
+    --verde:#1F4D2E; --lima:#C9F24D; --gris:#6B6B63;
+    --borde:rgba(14,15,12,.12);
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--tinta); color:var(--papel);
+    font-family:ui-sans-serif,system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+    -webkit-font-smoothing:antialiased; line-height:1.35;
+  }
+  .wrap{width:100%;max-width:1180px;margin:0 auto;padding:0 24px}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;
+    background:
+      radial-gradient(90% 65% at 80% 8%, rgba(201,242,77,.42) 0%, rgba(201,242,77,.10) 35%, transparent 62%),
+      radial-gradient(85% 60% at 4% 95%, rgba(31,77,46,.95) 0%, transparent 65%),
+      linear-gradient(160deg,#14160F 0%,#0E0F0C 55%,#0A0B08 100%);
+  }
+  .hero-bg::after{content:"";position:absolute;inset:0;opacity:.5;
+    background-image:radial-gradient(rgba(246,244,239,.16) 1px, transparent 1px);
+    background-size:3px 3px;mix-blend-mode:soft-light}
+  .hero-grid{position:absolute;inset:0;opacity:.2;
+    background-image:linear-gradient(rgba(246,244,239,.5) 1px,transparent 1px),linear-gradient(90deg,rgba(246,244,239,.5) 1px,transparent 1px);
+    background-size:96px 96px;
+    -webkit-mask-image:radial-gradient(70% 60% at 50% 40%,#000 0%,transparent 75%);
+            mask-image:radial-gradient(70% 60% at 50% 40%,#000 0%,transparent 75%)}
+  .hero>.wrap{position:relative;z-index:1}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:22px 0}
+  .marca{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:-.02em;font-size:19px}
+  .punto{width:11px;height:11px;border-radius:50%;background:var(--lima);box-shadow:0 0 0 5px rgba(201,242,77,.16)}
+  .nav-b{color:var(--papel);text-decoration:none;font-size:14px;border:1px solid rgba(246,244,239,.28);
+    padding:9px 16px;border-radius:999px;transition:.2s}
+  .nav-b:hover{background:var(--papel);color:var(--tinta)}
+
+  .hero-body{flex:1;display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:center;padding:40px 0 72px}
+  .kicker{display:inline-block;font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--lima);
+    border:1px solid rgba(201,242,77,.35);padding:7px 13px;border-radius:999px;margin-bottom:26px}
+  h1{font-size:clamp(40px,6.6vw,78px);line-height:1.02;letter-spacing:-.035em;margin:0 0 22px;font-weight:700}
+  h1 em{font-style:normal;color:var(--lima)}
+  .bajada{font-size:clamp(17px,2vw,21px);color:rgba(246,244,239,.74);max-width:30ch;margin:0 0 34px}
+  .ctas{display:flex;gap:12px;flex-wrap:wrap}
+  .b1,.b2{text-decoration:none;font-size:15.5px;font-weight:600;padding:15px 26px;border-radius:999px;display:inline-block;transition:.2s}
+  .b1{background:var(--lima);color:#14160F}
+  .b1:hover{transform:translateY(-2px)}
+  .b2{color:var(--papel);border:1px solid rgba(246,244,239,.3)}
+  .b2:hover{background:rgba(246,244,239,.08)}
+
+  /* ---------- TARJETA FLOTANTE ---------- */
+  .card{background:var(--papel);color:var(--tinta);border-radius:22px;padding:30px 28px;
+    box-shadow:0 40px 80px -24px rgba(0,0,0,.65);transform:rotate(-1.2deg)}
+  .card h3{margin:0 0 4px;font-size:15px;letter-spacing:-.01em}
+  .card .sub{margin:0 0 22px;font-size:13.5px;color:var(--gris)}
+  .barra{margin-bottom:18px}
+  .barra .top{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;margin-bottom:7px}
+  .barra .top b{font-size:22px;letter-spacing:-.02em}
+  .pista{height:10px;border-radius:999px;background:var(--crema);overflow:hidden}
+  .fill{display:block;height:100%;border-radius:999px}
+  .fill.a{width:100%;background:#C9C4B6}
+  .fill.b{width:60%;background:var(--verde)}
+  .card .pie{border-top:1px solid var(--borde);padding-top:14px;font-size:13.5px;color:var(--gris)}
+  .card .pie b{color:var(--tinta)}
+
+  /* ---------- PASOS ---------- */
+  section{padding:96px 0}
+  .claro{background:var(--papel);color:var(--tinta)}
+  .h2{font-size:clamp(28px,4vw,44px);line-height:1.06;letter-spacing:-.03em;margin:0 0 14px;font-weight:700}
+  .lead{font-size:18px;color:var(--gris);max-width:56ch;margin:0 0 52px}
+  .pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .paso{background:#fff;border:1px solid var(--borde);border-radius:18px;padding:26px}
+  .num{width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--lima);display:flex;
+    align-items:center;justify-content:center;font-size:15px;font-weight:700;margin-bottom:18px}
+  .paso h4{margin:0 0 8px;font-size:18.5px;letter-spacing:-.02em}
+  .paso p{margin:0;font-size:15px;color:var(--gris)}
+
+  /* ---------- NO ES ---------- */
+  .oscuro{background:var(--tinta)}
+  .noes{display:grid;grid-template-columns:repeat(2,1fr);gap:0;border:1px solid rgba(246,244,239,.16);border-radius:18px;overflow:hidden}
+  .noes div{padding:26px 24px;font-size:16px}
+  .noes .no{border-right:1px solid rgba(246,244,239,.16);color:rgba(246,244,239,.62)}
+  .noes .si{background:rgba(201,242,77,.07)}
+  .noes h5{margin:0 0 14px;font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--lima)}
+  .noes .no h5{color:rgba(246,244,239,.5)}
+  .noes ul{margin:0;padding-left:18px}
+  .noes li{margin-bottom:8px}
+
+  /* ---------- CIERRE ---------- */
+  .cierre{background:var(--verde);color:var(--papel);text-align:center;padding:104px 0}
+  .cierre .h2{margin-bottom:18px}
+  .cierre p{font-size:18px;color:rgba(246,244,239,.8);max-width:46ch;margin:0 auto 34px}
+  footer{background:var(--tinta);color:rgba(246,244,239,.45);font-size:13px;padding:30px 0}
+  footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+  @media (max-width:880px){
+    .hero-body{grid-template-columns:1fr;gap:40px;padding:24px 0 56px}
+    .card{transform:none}
+    .pasos{grid-template-columns:1fr}
+    .noes{grid-template-columns:1fr}
+    .noes .no{border-right:0;border-bottom:1px solid rgba(246,244,239,.16)}
+    section{padding:68px 0}
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-bg"></div><div class="hero-grid"></div>
+  <div class="wrap">
+    <nav>
+      <div class="marca"><span class="punto"></span> Dropeating</div>
+      <a class="nav-b" href="#como">Cómo funciona</a>
+    </nav>
+  </div>
+  <div class="wrap hero-body">
+    <div>
+      <span class="kicker">Para tiendas de barrio</span>
+      <h1>Usted no compra<br>el surtido.<br><em>Lo vende.</em></h1>
+      <p class="bajada">Le dejo doce productos en su estante. No me paga nada por ellos. Me abona lo que se venda, el día que se venda. Lo que no rote, me lo llevo.</p>
+      <div class="ctas">
+        <a class="b1" href="#como">Ver cómo funciona</a>
+        <a class="b2" href="#noes">¿Es un préstamo? No</a>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Para ganarse $100.000</h3>
+      <p class="sub">¿Cuántas unidades tiene que vender?</p>
+      <div class="barra">
+        <div class="top"><span>Marca de siempre</span><b>133</b></div>
+        <div class="pista"><span class="fill a"></span></div>
+      </div>
+      <div class="barra">
+        <div class="top"><span>Marca Dropeating</span><b>80</b></div>
+        <div class="pista"><span class="fill b"></span></div>
+      </div>
+      <p class="pie"><b>53 unidades menos.</b> Mismo estante, mismo esfuerzo, la misma plata en el bolsillo.</p>
+    </div>
+  </div>
+</header>
+
+<section class="claro" id="como">
+  <div class="wrap">
+    <h2 class="h2">Tres pasos. Sin papeles.</h2>
+    <p class="lead">Es la misma lógica de las ventas por internet, pero en el mostrador: se prueban muchos productos sin comprar ninguno, y se queda el que la gente pide.</p>
+    <div class="pasos">
+      <div class="paso"><div class="num">1</div><h4>Llega el estante</h4><p>Le monto el exhibidor y doce referencias con su material de marca. Usted no pone un peso y no firma con ningún banco.</p></div>
+      <div class="paso"><div class="num">2</div><h4>Se prueban las doce</h4><p>En dos semanas sabemos cuáles se le van y cuáles no. Las que no rotan me las llevo y no le costaron nada.</p></div>
+      <div class="paso"><div class="num">3</div><h4>Repongo lo que vende</h4><p>Si se le van diez diarias, le llevo diez. Usted abona lo vendido. El día flojo no debe nada.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="oscuro" id="noes">
+  <div class="wrap">
+    <h2 class="h2">Lo que no es.</h2>
+    <p class="lead" style="color:rgba(246,244,239,.6)">La mercancía no es suya hasta que un vecino la paga. Eso no es un favor: es un contrato de consignación, artículo 1377 del Código de Comercio.</p>
+    <div class="noes">
+      <div class="no">
+        <h5>No hay</h5>
+        <ul><li>Préstamo ni interés</li><li>Cuota fija de fin de mes</li><li>Codeudor, pagaré ni centrales de riesgo</li><li>Nadie tocándole la puerta</li></ul>
+      </div>
+      <div class="si">
+        <h5>Sí hay</h5>
+        <ul><li>Mercancía que no es suya hasta venderse</li><li>Abono solo de lo vendido, en pesos</li><li>Cambio de lo que no rote, sin costo</li><li>Un contrato escrito, de los dos lados</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cierre">
+  <div class="wrap">
+    <h2 class="h2">Piloto en un barrio de Bogotá.</h2>
+    <p>Arranca con veinte tiendas. Si la suya vende, el estante se queda; si no, me lo llevo y no le costó nada.</p>
+    <a class="b1" href="#como">Quiero el estante</a>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>Dropeating · Bogotá, Colombia</span>
+    <span>Prototipo del Builder Case · Makers Fellowship 2026</span>
+  </div>
+</footer>
+
+</body>
+</html>
